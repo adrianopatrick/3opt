@@ -1,4 +1,4 @@
-package br.uece.threeopt.heuristica;
+package br.uece.threeopt.heuristica.caixeiroviajante;
 
 import java.util.List;
 

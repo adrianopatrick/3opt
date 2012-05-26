@@ -1,7 +1,7 @@
 package br.uece.threeopt.utils;
 
-import br.uece.threeopt.heuristica.Celula;
-import br.uece.threeopt.heuristica.Ponto;
+import br.uece.threeopt.heuristica.caixeiroviajante.Celula;
+import br.uece.threeopt.heuristica.caixeiroviajante.Ponto;
 
 /**
  * @author patrick cunha

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import br.uece.threeopt.heuristica.Celula;
-import br.uece.threeopt.heuristica.MatrizAdjacencias;
-import br.uece.threeopt.heuristica.Ponto;
+import br.uece.threeopt.heuristica.caixeiroviajante.Celula;
+import br.uece.threeopt.heuristica.caixeiroviajante.MatrizAdjacencias;
+import br.uece.threeopt.heuristica.caixeiroviajante.Ponto;
 
 /**
  * @author raquel silveira e paulo alberto
