@@ -6,7 +6,7 @@ package br.uece.threeopt.heuristica.caixeiroviajante;
  * A classe ponto representa cada cidade que o
  * caixeiro viajante deve visitar 
  * */
-public class Ponto {
+public class Ponto{
 	
 	private Integer id;
 	private Double coordX;
@@ -102,5 +102,4 @@ public class Ponto {
 		return "Ponto [id=" + id + ", coordX=" + coordX + ", coordY=" + coordY
 				+ "]";
 	}	
-	
 }
