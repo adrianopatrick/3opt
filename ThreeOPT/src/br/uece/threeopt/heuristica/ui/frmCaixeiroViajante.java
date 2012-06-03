@@ -323,6 +323,7 @@ public class frmCaixeiroViajante extends JFrame {
 				System.out.println(caminho.getDistancia());
 				Thread.sleep(300);
 			}
+			System.out.print("Tempo total: " + ThreeOpt.tempoTotal + " ms");
 		}
 		catch(InterruptedException e) {}	
 	}
