@@ -44,6 +44,12 @@ public class frmPrincipal extends JFrame {
             	menuItemActionPerformed(evento);
             }
         });
+		
+		menuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evento) {
+            	menuItem2ActionPerformed(evento);
+            }
+        });
 	}
 		
 	/**
@@ -55,6 +61,21 @@ public class frmPrincipal extends JFrame {
 	private void menuItemActionPerformed(java.awt.event.ActionEvent evento) {
 		
 		frmCaixeiroViajante form = new frmCaixeiroViajante();
+		form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  
+		form.setSize(500, 500);
+		form.setLocationRelativeTo(null);
+		form.setVisible(true);
+	}
+	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo chama o formulario do JSSP
+	 * @param evento
+	 */
+	private void menuItem2ActionPerformed(java.awt.event.ActionEvent evento) {
+		
+		frmJSSP form = new frmJSSP();
 		form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  
 		form.setSize(500, 500);
 		form.setLocationRelativeTo(null);

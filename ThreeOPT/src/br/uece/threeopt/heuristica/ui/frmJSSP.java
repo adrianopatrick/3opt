@@ -7,7 +7,6 @@ import java.awt.Label;
 import java.awt.TextField;
 import java.awt.geom.Ellipse2D;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -21,14 +20,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
-import br.uece.threeopt.heuristica.caixeiroviajante.Caminho;
-import br.uece.threeopt.heuristica.caixeiroviajante.Celula;
-import br.uece.threeopt.heuristica.caixeiroviajante.Ponto;
 import br.uece.threeopt.heuristica.opt.ThreeOpt;
 import br.uece.threeopt.utils.ArquivoUtils;
+import br.uece.threeopt.heuristica.sequenciamento.Job;
 
-public class frmCaixeiroViajante extends JFrame {
-
+public class frmJSSP extends JFrame {
+	
 	Label label1 = null;
 	TextField txtArquivo = null;
 	JPanel panel = null;
@@ -36,12 +33,11 @@ public class frmCaixeiroViajante extends JFrame {
 	JLabel lblN = null;
 	JLabel lblOtima = null;
 	File file = null;
-	Celula[][] matriz = null;
+	Job[][] matriz = null;
 	int valorZoom = 100;
 	JSlider slider = null;
-	Ponto[] pontos = null;
 	
-	public frmCaixeiroViajante() {
+	public frmJSSP() {
 		inicializaComponentes();
 		this.setExtendedState(MAXIMIZED_BOTH);
 	}
@@ -53,7 +49,7 @@ public class frmCaixeiroViajante extends JFrame {
 	 */
 	private void inicializaComponentes() {
 
-		this.setTitle("Caixeiro Viajante - 3-OPT");
+		this.setTitle("Job-Shop Scheduling Problem (JSSP) - 3-OPT");
 		panel = new javax.swing.JPanel();
 		label1 = new Label();
 		label1.setText("Arquivo");
@@ -108,7 +104,7 @@ public class frmCaixeiroViajante extends JFrame {
 	            	if (!slider.getValueIsAdjusting())
 	            	{
 	            		valorZoom = slider.getValue();
-	            		desenhaTrajetoria(pontos);
+	            		//desenhaTrajetoria(pontos);
 	            	}
 	            }  
 	         }); 
@@ -122,7 +118,7 @@ public class frmCaixeiroViajante extends JFrame {
 		
 		btnGeraSolucao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evento) {
-            	btnGeraSolucaoArquivoActionPerformed(evento);
+            	//btnGeraSolucaoArquivoActionPerformed(evento);
             }
         });
 	}
@@ -167,23 +163,43 @@ public class frmCaixeiroViajante extends JFrame {
 	        }
 			
 			ArquivoUtils au = new ArquivoUtils();
-			matriz = au.lerArquivo(file);
+			matriz = au.lerArquivoJSSP(file);
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo obtem a extensao do arquivo
+	 * @param arquivo
+	 * @return extensao do arquivo
+	 */
+	private String getExtension(File f) {
+		
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+        }
+        return ext;
+    }
+	
+	/*
 	/**
 	 * @author raquel silveira e paulo alberto
 	 * @version 1.0
 	 * Este metodo trata se o arquivo eh valido e gera a solucao caso seja
 	 * @param evento
 	 */
-	private void btnGeraSolucaoArquivoActionPerformed(java.awt.event.ActionEvent evento) {
+	/*private void btnGeraSolucaoArquivoActionPerformed(java.awt.event.ActionEvent evento) {
 		
 		if (file == null) {
 			JOptionPane.showMessageDialog(this, "Antes de gerar a solução, é necessário escolher um arquivo.");
 		} else {
 			geraSolucao();
 		}
-	}
+	}*/
 	
 	/**
 	 * @author raquel silveira e paulo alberto
@@ -191,14 +207,14 @@ public class frmCaixeiroViajante extends JFrame {
 	 * Este metodo desenha as coordenadas x e y de acordo com o tamanho do painel
 	 * @param grafico
 	 */
-	private void desenhaCoordenada(java.awt.Graphics2D g) {
+	/*private void desenhaCoordenada(java.awt.Graphics2D g) {
 		
 		g.setColor(Color.DARK_GRAY);
 		g.drawLine(0, panel2.getHeight()/2, panel2.getWidth(), panel2.getHeight()/2);
 		g.drawLine(panel2.getWidth()/2, 0, panel2.getWidth()/2, panel2.getWidth()/2);
 		
 		slider.setBounds(panel2.getWidth() - 200, panel2.getHeight() - 70, 200, 70);
-	}
+	}*/
 	
 	/**
 	 * @author raquel silveira e paulo alberto
@@ -206,10 +222,10 @@ public class frmCaixeiroViajante extends JFrame {
 	 * Este metodo limpa o que foi desenhado no painel
 	 * @param grafico
 	 */
-	private void limpaTela(java.awt.Graphics2D g) {
+	/*private void limpaTela(java.awt.Graphics2D g) {
 		
 		panel2.paintAll(g);
-	}
+	}*/
 	
 	/**
 	 * @author raquel silveira e paulo alberto
@@ -217,7 +233,7 @@ public class frmCaixeiroViajante extends JFrame {
 	 * Este metodo plota os pontos no grafico
 	 * @param grafico
 	 */
-	private void desenhaPontos(java.awt.Graphics2D g) {
+	/*private void desenhaPontos(java.awt.Graphics2D g) {
 			
 			double zoom = getZoom();
 			g.setColor(Color.BLACK);
@@ -227,7 +243,7 @@ public class frmCaixeiroViajante extends JFrame {
 						g.fill(new Ellipse2D.Double((matriz[i][0].getOrigem().getCoordX()*zoom + panel2.getWidth()/2 - 2), (panel2.getHeight()/2 - matriz[i][0].getOrigem().getCoordY()*zoom - 2), 4, 4));
 				}
 			}
-	}
+	}*/
 	
 	/**
 	 * @author raquel silveira e paulo alberto
@@ -236,7 +252,7 @@ public class frmCaixeiroViajante extends JFrame {
 	 * @param grafico
 	 * @param ciclo
 	 */
-	private void desenhaTrajetoria(Ponto[] ciclo) {
+	/*private void desenhaTrajetoria(Ponto[] ciclo) {
 		
 		Graphics2D g = (Graphics2D)panel2.getGraphics();
 		limpaTela(g);
@@ -260,7 +276,7 @@ public class frmCaixeiroViajante extends JFrame {
 		}
 		
 		System.out.println();
-	}
+	}*/
 	
 	/**
 	 * @author raquel silveira e paulo alberto
@@ -268,7 +284,7 @@ public class frmCaixeiroViajante extends JFrame {
 	 * Este metodo obtem o valor de proporcao do zoom
 	 * @return valor de proporcao do zoom
 	 */
-	private double getZoom() {
+	/*private double getZoom() {
 	
 		double valor = 1;
 		if (valorZoom >= 0 && valorZoom < 25) { valor = 0.1; }
@@ -281,40 +297,22 @@ public class frmCaixeiroViajante extends JFrame {
 		if (valorZoom >= 175 && valorZoom < 200) { valor = 4; }
 		if (valorZoom >= 200) { valor = 5; }
 		return valor;
-	}
-	
-	/**
-	 * @author raquel silveira e paulo alberto
-	 * @version 1.0
-	 * Este metodo obtem a extensao do arquivo
-	 * @param arquivo
-	 * @return extensao do arquivo
-	 */
-	private String getExtension(File f) {
-		
-        String ext = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-
-        if (i > 0 &&  i < s.length() - 1) {
-            ext = s.substring(i+1).toLowerCase();
-        }
-        return ext;
-    }
+	}*/
 	
 	/**
 	 * @author raquel silveira e paulo alberto
 	 * @version 1.0
 	 * Este metodo gera o grafico com os pontos de acordo
 	 */
-	private synchronized void geraSolucao() {
+	/*private synchronized void geraSolucao() {
 		
 		try {
 			Double distancia = 0.0;
 			lblN.setText(matriz.length+"");
 			lblOtima.setText(distancia+"");
 							
-			List<Caminho> caminhos = new ThreeOpt().obtemCaminhos(matriz);			
+			List<Caminho> caminhos = new ThreeOpt().obtemCaminhos(matriz);
+			
 			for (Caminho caminho : caminhos) {
 				 
 				desenhaTrajetoria(caminho.getPonto());
@@ -322,8 +320,8 @@ public class frmCaixeiroViajante extends JFrame {
 				System.out.println(caminho.getDistancia());
 				Thread.sleep(300);
 			}
-			System.out.println("Tempo total: " + ThreeOpt.tempoTotal + " ns");
+			System.out.print("Tempo total: " + ThreeOpt.tempoTotal + " ms");
 		}
 		catch(InterruptedException e) {}	
-	}
+	}*/
 }

@@ -53,27 +53,28 @@ public class ThreeOpt {
 			melhorCaminho.setDistancia(calculaDistancia(matriz, cicloOriginal));
 			caminhos.add(melhorCaminho);
 			
-			java.util.Date tempoInicial = Calendar.getInstance().getTime();
-			if (matriz.length <= 200) {
+			long tempoInicial = System.nanoTime();
+			if (matriz.length <= 100) {
 				int v[] = new int[3];
-				for (int i = 0; i < matriz.length; i++) { 
-					for (int k = i + 2; k < matriz.length; k++) { 
-						for (int m = k + 2; m < matriz.length; m++) { 
-							v[0] = i; v[1] = k; v[2] = m; 
-							melhorCaminho = obtemInteracoes(matriz, melhorCaminho, v);
-							melhorCaminho = adicionaCaminho(melhorCaminho);
+				for (int qtdeRepeticoes = 0; qtdeRepeticoes < matriz.length; qtdeRepeticoes++) {
+					for (int i = 0; i < matriz.length; i++) { 
+						for (int k = i + 2; k < matriz.length; k++) { 
+							for (int m = k + 2; m < matriz.length; m++) { 
+								v[0] = i; v[1] = k; v[2] = m; 
+								melhorCaminho = obtemInteracoes(matriz, melhorCaminho, v);
+								melhorCaminho = adicionaCaminho(melhorCaminho);
+							}
 						}
 					}
 				}
 			}
 			else {
-				for (int i = 0; i < cicloOriginal.length * 1000 || naoMelhora < cicloOriginal.length * 1000 * 0.05;   i++) {	
+				for (int i = 0; i < Math.pow(cicloOriginal.length, 2)/2 || naoMelhora < Math.pow(cicloOriginal.length, 2)/2 * 0.05;   i++) {	
 					melhorCaminho = obtemInteracoes(matriz, melhorCaminho, obtemVerticesRandomicos(matriz.length-1));
 					melhorCaminho = adicionaCaminho(melhorCaminho);
 				}
 			}
-			java.util.Date tempoFinal = Calendar.getInstance().getTime();
-			tempoTotal = tempoFinal.getTime() - tempoInicial.getTime();
+			tempoTotal = System.nanoTime() - tempoInicial;
 			return caminhos;
 		}
 		catch (Exception e) { }
