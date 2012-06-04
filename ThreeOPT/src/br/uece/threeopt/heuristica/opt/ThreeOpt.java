@@ -17,7 +17,13 @@ public class ThreeOpt {
 	
 	public List<Caminho> caminhos = new ArrayList<Caminho>(); 
 	public static long tempoTotal = 0;
+	public int naoMelhora = 0;
 		
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo obtem o ciclo inicial para as demais interacoes
+	 */
 	public Ponto[] obtemCicloHamiltoniano(Celula[][] matriz) {
 		
 		//A principio o ciclo eh gerado em ordem crescente de id
@@ -33,6 +39,11 @@ public class ThreeOpt {
 		return ciclo;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo obtem os melhores caminhos da solucao
+	 */
 	public List<Caminho> obtemCaminhos(Celula[][] matriz)
 	{
 		try {
@@ -48,7 +59,6 @@ public class ThreeOpt {
 				for (int i = 0; i < matriz.length; i++) { 
 					for (int k = i + 2; k < matriz.length; k++) { 
 						for (int m = k + 2; m < matriz.length; m++) { 
-							System.out.println(m);
 							v[0] = i; v[1] = k; v[2] = m; 
 							melhorCaminho = obtemInteracoes(matriz, melhorCaminho, v);
 							melhorCaminho = adicionaCaminho(melhorCaminho);
@@ -57,7 +67,7 @@ public class ThreeOpt {
 				}
 			}
 			else {
-				for (int i = 0; i < Math.pow(cicloOriginal.length, 1);   i++) {	
+				for (int i = 0; i < cicloOriginal.length * 1000 || naoMelhora < cicloOriginal.length * 1000 * 0.05;   i++) {	
 					melhorCaminho = obtemInteracoes(matriz, melhorCaminho, obtemVerticesRandomicos(matriz.length-1));
 					melhorCaminho = adicionaCaminho(melhorCaminho);
 				}
@@ -70,6 +80,11 @@ public class ThreeOpt {
 		return null;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo adiciona os melhores caminhos a uma lista
+	 */
 	private Caminho adicionaCaminho(Caminho caminho)
 	{
 		try {
@@ -85,11 +100,19 @@ public class ThreeOpt {
 		return null;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo obtem as interacoes a partir de um ciclo inicial
+	 * @param matriz de pontos
+	 * @param caminho contendo um ciclo inicial
+	 * @param vertices escolhidos para serem removidos
+	 */
 	public Caminho obtemInteracoes(Celula[][] matriz, Caminho caminho, int[] v){
 		
-		System.out.println(v[0] + " (" + caminho.getPonto()[v[0]].getId() + " - " + caminho.getPonto()[v[0]+1].getId() + ")");
-		System.out.println(v[1] + " (" + caminho.getPonto()[v[1]].getId() + " - " + caminho.getPonto()[v[1]+1].getId() + ")");
-		System.out.println(v[2] + " (" + caminho.getPonto()[v[2]].getId() + " - " + caminho.getPonto()[v[2]+1].getId() + ")");
+		System.out.println(v[0] + " [i: " + caminho.getPonto()[v[0]].getId() + " - j: " + caminho.getPonto()[v[0]+1].getId() + "]");
+		System.out.println(v[1] + " [k: " + caminho.getPonto()[v[1]].getId() + " - l: " + caminho.getPonto()[v[1]+1].getId() + "]");
+		System.out.println(v[2] + " [m: " + caminho.getPonto()[v[2]].getId() + " - n: " + caminho.getPonto()[v[2]+1].getId() + "]");
 						
 		Caminho melhorCiclo = null;
 		try { melhorCiclo = caminho.clone(); }
@@ -120,8 +143,11 @@ public class ThreeOpt {
 			}
 			
 			try {
-			if (ciclo.getDistancia() < melhorCiclo.getDistancia())
+			if (ciclo.getDistancia() < melhorCiclo.getDistancia()) {
 				melhorCiclo = ciclo.clone();
+				naoMelhora = 0;
+			}
+			else naoMelhora++;
 			} catch(Exception ex) {}
 			
 			System.out.print("(" + i + ")");
@@ -135,6 +161,12 @@ public class ThreeOpt {
 		return melhorCiclo;	
 	}
 			
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo obtem 3 vertices de forma randomica
+	 * @param valor maximo a ser escolhido
+	 */
 	private int[] obtemVerticesRandomicos(int n) {
 		
 		Random randomico = new Random();
@@ -152,18 +184,32 @@ public class ThreeOpt {
 		return v;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo calcula a distancia da solucao
+	 * A distancia eh calculada a partir do custo do ciclo sem as arestas retiradas, somando com o novo posicionamento das arestas
+	 * @param novo ciclo
+	 * @param vertice i
+	 * @param vertice k
+	 * @param vertice m
+	 * @param matriz de pontos
+	 * @param custo do ciclo inicial sem as arestas
+	 */
 	public double calculaDistanciaSolucao(Ponto[] ciclo, int v1, int v2, int v3, Celula[][] matriz, double c0) {
-		
-		/*System.out.println ("Solução: c0 " + c0 + 
-				"d1 " + ciclo[v1].getId() + " a " + ciclo[v1+1].getId() + " " + matriz[ciclo[v1].getId()-1][ciclo[v1+1].getId()-1].getDistancia() +
-				"d2 " + ciclo[v2].getId() + " a " + ciclo[v2+1].getId() + " " + matriz[ciclo[v2].getId()-1][ciclo[v2+1].getId()-1].getDistancia() +
-				"d3 " + ciclo[v3].getId() + " a " + ciclo[v3+1].getId() + " " + matriz[ciclo[v3].getId()-1][ciclo[v3+1].getId()-1].getDistancia());*/
 		
 		return c0 + matriz[ciclo[v1].getId()-1][ciclo[v1+1].getId()-1].getDistancia()
                   + matriz[ciclo[v2].getId()-1][ciclo[v2+1].getId()-1].getDistancia()
                   + matriz[ciclo[v3].getId()-1][ciclo[v3+1].getId()-1].getDistancia();
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo calcula a distancia do ciclo, percorrendo todos os pontos
+	 * @param matriz de pontos
+	 * @param ciclo formado
+	 */
 	public double calculaDistancia(Celula[][] matriz, Ponto[] ciclo) {
 		
 		double distancia = 0d;
@@ -173,6 +219,17 @@ public class ThreeOpt {
 		return distancia;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo aplica a primeira solucao do 3-OPT
+	 * @param ciclo de pontos
+	 * @param vertice i
+	 * @param vertice k
+	 * @param vertice m
+	 * @param matriz de pontos
+	 * @param custo do ciclo sem as arestas
+	 */
 	public Caminho aplicaSolucao1 (Ponto[] ciclo, int v1, int v2, int v3, Celula[][] matriz, double c0) {
 		
 		Caminho novoCiclo = new Caminho();
@@ -187,6 +244,17 @@ public class ThreeOpt {
 		return novoCiclo;
 	}	
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo aplica a segunda solucao do 3-OPT
+	 * @param ciclo de pontos
+	 * @param vertice i
+	 * @param vertice k
+	 * @param vertice m
+	 * @param matriz de pontos
+	 * @param custo do ciclo sem as arestas
+	 */
 	public Caminho aplicaSolucao2 (Ponto[] ciclo, int v1, int v2, int v3, Celula[][] matriz, double c0) {
 		
 		Caminho novoCiclo = new Caminho();
@@ -201,6 +269,17 @@ public class ThreeOpt {
 		return novoCiclo;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo aplica a terceira solucao do 3-OPT
+	 * @param ciclo de pontos
+	 * @param vertice i
+	 * @param vertice k
+	 * @param vertice m
+	 * @param matriz de pontos
+	 * @param custo do ciclo sem as arestas
+	 */
 	public Caminho aplicaSolucao3 (Ponto[] ciclo, int v1, int v2, int v3, Celula[][] matriz, double c0) {
 		
 		Caminho novoCiclo = new Caminho();
@@ -219,6 +298,17 @@ public class ThreeOpt {
 		return novoCiclo;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo aplica a quarta solucao do 3-OPT
+	 * @param ciclo de pontos
+	 * @param vertice i
+	 * @param vertice k
+	 * @param vertice m
+	 * @param matriz de pontos
+	 * @param custo do ciclo sem as arestas
+	 */
 	public Caminho aplicaSolucao4 (Ponto[] ciclo, int v1, int v2, int v3, Celula[][] matriz, double c0) {
 		
 		Caminho novoCiclo = new Caminho();
@@ -238,6 +328,17 @@ public class ThreeOpt {
 		return novoCiclo;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo aplica a quinta solucao do 3-OPT
+	 * @param ciclo de pontos
+	 * @param vertice i
+	 * @param vertice k
+	 * @param vertice m
+	 * @param matriz de pontos
+	 * @param custo do ciclo sem as arestas
+	 */
 	public Caminho aplicaSolucao5 (Ponto[] ciclo, int v1, int v2, int v3, Celula[][] matriz, double c0) {
 			
 		Caminho novoCiclo = new Caminho();
@@ -256,6 +357,17 @@ public class ThreeOpt {
 		return novoCiclo;
 	}
 	
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo aplica a sexta solucao do 3-OPT
+	 * @param ciclo de pontos
+	 * @param vertice i
+	 * @param vertice k
+	 * @param vertice m
+	 * @param matriz de pontos
+	 * @param custo do ciclo sem as arestas
+	 */
 	public Caminho aplicaSolucao6 (Ponto[] ciclo, int v1, int v2, int v3, Celula[][] matriz, double c0) {
 		
 		Caminho novoCiclo = new Caminho();
@@ -273,6 +385,17 @@ public class ThreeOpt {
 		return novoCiclo;
 	}
 		
+	/**
+	 * @author raquel silveira e paulo alberto
+	 * @version 1.0
+	 * Este metodo aplica a setima solucao do 3-OPT
+	 * @param ciclo de pontos
+	 * @param vertice i
+	 * @param vertice k
+	 * @param vertice m
+	 * @param matriz de pontos
+	 * @param custo do ciclo sem as arestas
+	 */
 	public Caminho aplicaSolucao7 (Ponto[] ciclo, int v1, int v2, int v3, Celula[][] matriz, double c0) {
 		
 		Caminho novoCiclo = new Caminho();
