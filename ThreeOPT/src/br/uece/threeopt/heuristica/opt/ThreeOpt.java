@@ -111,19 +111,19 @@ public class ThreeOpt {
 	 */
 	public Caminho obtemInteracoes(Celula[][] matriz, Caminho caminho, int[] v){
 		
-		System.out.println(v[0] + " [i: " + caminho.getPonto()[v[0]].getId() + " - j: " + caminho.getPonto()[v[0]+1].getId() + "]");
+		/*System.out.println(v[0] + " [i: " + caminho.getPonto()[v[0]].getId() + " - j: " + caminho.getPonto()[v[0]+1].getId() + "]");
 		System.out.println(v[1] + " [k: " + caminho.getPonto()[v[1]].getId() + " - l: " + caminho.getPonto()[v[1]+1].getId() + "]");
-		System.out.println(v[2] + " [m: " + caminho.getPonto()[v[2]].getId() + " - n: " + caminho.getPonto()[v[2]+1].getId() + "]");
+		System.out.println(v[2] + " [m: " + caminho.getPonto()[v[2]].getId() + " - n: " + caminho.getPonto()[v[2]+1].getId() + "]");*/
 						
 		Caminho melhorCiclo = null;
 		try { melhorCiclo = caminho.clone(); }
 		catch (Exception e) { }
 		
-		System.out.print("(0)");
+		/*System.out.print("(0)");
 		for (int j = 0; j < caminho.getPonto().length; j++) {
 			System.out.print(" - " + caminho.getPonto()[j].getId());
 		}
-		System.out.println(" -> " + caminho.getDistancia());
+		System.out.println(" -> " + caminho.getDistancia());*/
 		double c0 = caminho.getDistancia() 
 					- (matriz[caminho.getPonto()[v[0]].getId()-1][caminho.getPonto()[v[0]+1].getId()-1].getDistancia()
 					+ matriz[caminho.getPonto()[v[1]].getId()-1][caminho.getPonto()[v[1]+1].getId()-1].getDistancia()
@@ -151,14 +151,14 @@ public class ThreeOpt {
 			else naoMelhora++;
 			} catch(Exception ex) {}
 			
-			System.out.print("(" + i + ")");
+			/*System.out.print("(" + i + ")");
 			for (int j = 0; j < ciclo.getPonto().length; j++) {
 				System.out.print(" - " + ciclo.getPonto()[j].getId());
 			}
-			System.out.println(" -> " + ciclo.getDistancia());
+			System.out.println(" -> " + ciclo.getDistancia());*/
 		}
 		
-		System.out.println("Melhor distância: " + melhorCiclo.getDistancia());
+		//System.out.println("Melhor distï¿½ncia: " + melhorCiclo.getDistancia());
 		return melhorCiclo;	
 	}
 			

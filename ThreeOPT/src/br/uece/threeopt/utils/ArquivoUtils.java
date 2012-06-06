@@ -13,6 +13,8 @@ import br.uece.threeopt.heuristica.caixeiroviajante.Celula;
 import br.uece.threeopt.heuristica.caixeiroviajante.MatrizAdjacencias;
 import br.uece.threeopt.heuristica.caixeiroviajante.Ponto;
 import br.uece.threeopt.heuristica.sequenciamento.Job;
+import br.uece.threeopt.heuristica.sequenciamento.Maquina;
+import br.uece.threeopt.heuristica.sequenciamento.Tarefa;
 
 /**
  * @author raquel silveira e paulo alberto
@@ -84,11 +86,11 @@ public class ArquivoUtils {
 		return matriz;
 	}
 	
-	public Job[][] lerArquivoJSSP(File arquivo) {
+	public static Job[][] lerArquivoJSSP(File arquivo) {
 		
-		Job[][] matriz = null;
-		try
-		{
+		Job[][] jobs = null;
+		
+		try {
 			BufferedReader arquivoLeitura = new BufferedReader(new FileReader(arquivo.getAbsolutePath()));
 			String linha1 = arquivoLeitura.readLine();
 			
@@ -96,38 +98,33 @@ public class ArquivoUtils {
 			int qtdeJob = Integer.parseInt(token.nextToken());
 			int qtdeMaq = Integer.parseInt(token.nextToken());
 			
-			matriz = new Job[qtdeMaq][qtdeJob];
+			jobs = new Job[qtdeMaq][qtdeJob];
 			int indiceLinha = 0;
 			String linha;
 			
 			while(arquivoLeitura.ready() && !(linha = arquivoLeitura.readLine()).trim().equals("")){
 				StringTokenizer tokenLinha = new StringTokenizer(linha, " ");
 				while(tokenLinha.hasMoreTokens()) {
+					
 					int idMaquina = Integer.parseInt(tokenLinha.nextToken());
-		    		Job tarefa = new Job();
-					tarefa.setId(indiceLinha);
-					tarefa.setTempo(Integer.parseInt(tokenLinha.nextToken()));
-					matriz[idMaquina][indiceLinha] = tarefa;
+					
+					Job job = new Job();
+					job.setMaquina(new Maquina(idMaquina));
+					job.setTarefa(new Tarefa(indiceLinha));				
+					job.setTempo(Integer.parseInt(tokenLinha.nextToken()));
+					jobs[idMaquina][indiceLinha] = job;
 		    	} 
 				indiceLinha++;
 			}
 			
 	        arquivoLeitura.close();
 	        
-	        for (int i = 0; i < qtdeMaq; i++) {
-				for (int j = 0; j < qtdeJob; j++) {
-					System.out.print(matriz[i][j].getTempo() + " ");
-				}
-				System.out.println();
-			}
-		}
-		catch (FileNotFoundException  e) {
-			// TODO: handle exception
-		}
-		catch (IOException e) {
-			// TODO: handle exception
-		}
-		return matriz;
+		} catch (FileNotFoundException  e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return jobs;
 	}
 	
 	

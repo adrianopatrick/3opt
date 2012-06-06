@@ -2,28 +2,24 @@ package br.uece.threeopt.heuristica.ui;
 
 import java.awt.Button;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Label;
 import java.awt.TextField;
-import java.awt.geom.Ellipse2D;
 import java.io.File;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
-import br.uece.threeopt.heuristica.opt.ThreeOpt;
-import br.uece.threeopt.utils.ArquivoUtils;
 import br.uece.threeopt.heuristica.sequenciamento.Job;
+import br.uece.threeopt.utils.ArquivoUtils;
 
+@SuppressWarnings("serial")
 public class frmJSSP extends JFrame {
 	
 	Label label1 = null;
@@ -57,7 +53,7 @@ public class frmJSSP extends JFrame {
 		txtArquivo.setEditable(false);
 		txtArquivo.setSize(20, 100);
 		Button btnAbreArquivo = new Button("Selecionar arquivo");
-		Button btnGeraSolucao = new Button("Gerar solução");
+		Button btnGeraSolucao = new Button("Gerar soluï¿½ï¿½o");
 		panel.add(label1);
 		panel.add(txtArquivo);
 		panel.add(btnAbreArquivo);
@@ -80,7 +76,7 @@ public class frmJSSP extends JFrame {
 		panel2.add(lblN);
 		
 		JLabel label3 = new JLabel();
-		label3.setText("Solução Menor Caminho: ");
+		label3.setText("Soluï¿½ï¿½o Menor Caminho: ");
 		label3.setBounds(10, 30, 100, 20);
 		panel2.add(label3);
 		
@@ -195,7 +191,7 @@ public class frmJSSP extends JFrame {
 	/*private void btnGeraSolucaoArquivoActionPerformed(java.awt.event.ActionEvent evento) {
 		
 		if (file == null) {
-			JOptionPane.showMessageDialog(this, "Antes de gerar a solução, é necessário escolher um arquivo.");
+			JOptionPane.showMessageDialog(this, "Antes de gerar a soluï¿½ï¿½o, ï¿½ necessï¿½rio escolher um arquivo.");
 		} else {
 			geraSolucao();
 		}
