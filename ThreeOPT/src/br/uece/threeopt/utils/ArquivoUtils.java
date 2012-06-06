@@ -89,8 +89,9 @@ public class ArquivoUtils {
 	public static Job[][] lerArquivoJSSP(File arquivo) {
 		
 		Job[][] jobs = null;
-		
-		try {
+
+		try
+		{
 			BufferedReader arquivoLeitura = new BufferedReader(new FileReader(arquivo.getAbsolutePath()));
 			String linha1 = arquivoLeitura.readLine();
 			
@@ -175,7 +176,7 @@ public class ArquivoUtils {
 		int indiceToken = indiceLinha+1;
 		while(token.hasMoreTokens()) {
     		Ponto origem = new Ponto(); origem.setId(indiceLinha+1);
-    		Ponto destino = new Ponto(); destino.setId(indiceToken);
+    		Ponto destino = new Ponto(); destino.setId(indiceToken+1);
     		matriz[indiceLinha][indiceToken] = new Celula(origem, destino, Double.parseDouble(token.nextToken()));
 	       	indiceToken++;
     	}
