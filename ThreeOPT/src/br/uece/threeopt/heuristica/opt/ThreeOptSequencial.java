@@ -36,9 +36,12 @@ public class ThreeOptSequencial {
 			Integer tempoTotalDaSequencia = calculaTempoDaSequencia(tarefas);
 			Sequencia seqInicial = new Sequencia(tarefas, tempoTotalDaSequencia);
 			sequenciasTestadas.add(seqInicial);
+			
 			long inicio = System.nanoTime();
-			obtemNovaSequenciaRandomica(tarefas.clone());
+			executaThreeOPT(tarefas.clone());
 			long fim = System.nanoTime();
+			
+			//imprime alguns dados
 			Iterator<Sequencia> i = sequenciasTestadas.iterator();
 			
 			while(i.hasNext()){
@@ -56,22 +59,23 @@ public class ThreeOptSequencial {
 		return null;
 	}
 	
-	public void obtemNovaSequenciaRandomica(Tarefa[] tarefas){
+	public void executaThreeOPT(Tarefa[] tarefas){
 		
 		int index1 = 0, index2 = 0, index3 = 0;
 		int[] indexs = new int[3];
 		int parametro = 150;
 		
+		//gerador de novas sequencias de tarefas até todas as condições serem satisfeitas
 		do {
-			index1 = new Random().nextInt(tarefas.length-1);
-			index2 = new Random().nextInt(tarefas.length-1);
-			index3 = new Random().nextInt(tarefas.length-1);
+			index1 = new Random().nextInt(tarefas.length);
+			index2 = new Random().nextInt(tarefas.length);
+			index3 = new Random().nextInt(tarefas.length);
 			
 			indexs[0] = index1;
 			indexs[1] = index2;
 			indexs[2] = index3;
-			if(naoMelhora > parametro)
-				break;
+			/*if(naoMelhora > parametro)
+				break;*/
 			
 		} while (index1 == index2 || index1 == index3 || index2 == index3 || verificaSeRepetido(indexs, tarefas.clone()) || naoMelhora < parametro);
 		System.out.println(naoMelhora);
@@ -96,7 +100,7 @@ public class ThreeOptSequencial {
 			naoMelhora++;
 			return false;
 		} else {
-			System.out.println(naoMelhora+"entrou no else: "+sequencia);
+			System.out.println("Melhor Tempo: "+sequenciasTestadas.first().getTempo()+" NaoMelhora: "+naoMelhora+" entrou no else: "+sequencia);
 			return true;
 		}
 		
