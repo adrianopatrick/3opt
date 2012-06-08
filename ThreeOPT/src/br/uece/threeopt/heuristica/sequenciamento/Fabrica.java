@@ -1,7 +1,6 @@
 package br.uece.threeopt.heuristica.sequenciamento;
 
 import java.io.File;
-import java.net.URL;
 
 import br.uece.threeopt.heuristica.opt.ThreeOptSequencial;
 
@@ -12,7 +11,7 @@ public class Fabrica {
 		@SuppressWarnings("unused")
 		Matriz jobs = new Matriz() {
 			public File getArquivo() {
-				return new File(getRelativePath().getFile()+"Car5.txt");
+				return new File("/home/patrick/workspace/ThreeOPT/arquivos/instanciasSequenciamento/Car5.txt");
 			}
 		};
 		
@@ -20,8 +19,5 @@ public class Fabrica {
 		tps.obtemSequencias();		
 		
 	}
-
-	public static URL getRelativePath(){
-		return Fabrica.class.getResource("../../../../../arquivos/instanciasSequenciamento/");
-	}
+	
 }

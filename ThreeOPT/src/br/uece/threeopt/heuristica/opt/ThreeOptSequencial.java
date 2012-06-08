@@ -63,7 +63,7 @@ public class ThreeOptSequencial {
 		
 		int index1 = 0, index2 = 0, index3 = 0;
 		int[] indexs = new int[3];
-		int parametro = 159;
+		int parametro = 150; //valor varia de solução a solução: refactory
 		
 		//gerador de novas sequencias de tarefas até todas as condições serem satisfeitas
 		do {
