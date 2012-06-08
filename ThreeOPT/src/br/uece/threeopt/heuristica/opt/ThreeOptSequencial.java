@@ -1,6 +1,5 @@
 package br.uece.threeopt.heuristica.opt;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -14,7 +13,6 @@ import br.uece.threeopt.heuristica.sequenciamento.Tarefa;
 
 public class ThreeOptSequencial {
 	
-	public List<Job> sequencia = new ArrayList<Job>(); 
 	public TreeSet<Sequencia> sequenciasTestadas = new TreeSet<Sequencia>();
 	public static long tempoTotal = 0;
 	public int naoMelhora = 0;
@@ -36,10 +34,10 @@ public class ThreeOptSequencial {
 			}			
 			
 			Integer tempoTotalDaSequencia = calculaTempoDaSequencia(tarefas);
-			
-			sequenciasTestadas.add(new Sequencia(tarefas, tempoTotalDaSequencia));
+			Sequencia seqInicial = new Sequencia(tarefas, tempoTotalDaSequencia);
+			sequenciasTestadas.add(seqInicial);
 			long inicio = System.nanoTime();
-			obtemNovaSequenciaRandomica(tarefas);
+			obtemNovaSequenciaRandomica(tarefas.clone());
 			long fim = System.nanoTime();
 			Iterator<Sequencia> i = sequenciasTestadas.iterator();
 			
@@ -50,6 +48,7 @@ public class ThreeOptSequencial {
 			System.out.println("*** "+sequenciasTestadas.first());
 			System.out.println("Tempo Total: "+(fim-inicio/1000000000));
 			System.out.println(naoMelhora);
+			System.out.println(seqInicial);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -61,7 +60,7 @@ public class ThreeOptSequencial {
 		
 		int index1 = 0, index2 = 0, index3 = 0;
 		int[] indexs = new int[3];
-		int parametro = 5000;
+		int parametro = 150;
 		
 		do {
 			index1 = new Random().nextInt(tarefas.length-1);
@@ -74,7 +73,7 @@ public class ThreeOptSequencial {
 			if(naoMelhora > parametro)
 				break;
 			
-		} while (index1 == index2 || index1 == index3 || index2 == index3 || verificaSeRepetido(indexs, tarefas) || naoMelhora < parametro);
+		} while (index1 == index2 || index1 == index3 || index2 == index3 || verificaSeRepetido(indexs, tarefas.clone()) || naoMelhora < parametro);
 		System.out.println(naoMelhora);
 	}
 	
@@ -97,6 +96,7 @@ public class ThreeOptSequencial {
 			naoMelhora++;
 			return false;
 		} else {
+			System.out.println(naoMelhora+"entrou no else: "+sequencia);
 			return true;
 		}
 		
