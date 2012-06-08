@@ -63,7 +63,7 @@ public class ThreeOptSequencial {
 		
 		int index1 = 0, index2 = 0, index3 = 0;
 		int[] indexs = new int[3];
-		int parametro = 150;
+		int parametro = 159;
 		
 		//gerador de novas sequencias de tarefas até todas as condições serem satisfeitas
 		do {
@@ -94,7 +94,7 @@ public class ThreeOptSequencial {
 		
 		Sequencia sequencia = new Sequencia(tarefas, calculaTempoDaSequencia(tarefas));
 		
-		//sequencia já existe no Set ou o seu tempo é inferior a algum elemento do set (garantido pelo Set e método equals de Sequencia)
+		//só adiciona se sequencia ainda não existir no Set (garantido pelo Set e método equals de Sequencia)
 		if(sequenciasTestadas.add(sequencia)) {
 			System.out.println(naoMelhora);
 			naoMelhora++;

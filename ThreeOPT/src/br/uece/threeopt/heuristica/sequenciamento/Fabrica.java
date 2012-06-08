@@ -9,6 +9,7 @@ public class Fabrica {
 	
 	public static void main(String[] args) {
 		
+		@SuppressWarnings("unused")
 		Matriz jobs = new Matriz() {
 			public File getArquivo() {
 				return new File(getRelativePath().getFile()+"Car5.txt");
