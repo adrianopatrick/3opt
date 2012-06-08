@@ -16,12 +16,7 @@ public class Fabrica {
 		};
 		
 		ThreeOptSequencial tps = new ThreeOptSequencial();
-		Integer retorno = tps.calculaTempoDaSequencia(Matriz.getJobs()[0]);
-		
-		
-		System.out.println(retorno);
-		
-		
+		tps.obtemSequencias();		
 		
 	}
 
