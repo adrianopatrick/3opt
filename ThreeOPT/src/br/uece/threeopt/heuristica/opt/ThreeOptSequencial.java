@@ -2,7 +2,6 @@ package br.uece.threeopt.heuristica.opt;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
@@ -12,6 +11,7 @@ import br.uece.threeopt.heuristica.sequenciamento.Maquina;
 import br.uece.threeopt.heuristica.sequenciamento.Matriz;
 import br.uece.threeopt.heuristica.sequenciamento.Sequencia;
 import br.uece.threeopt.heuristica.sequenciamento.Tarefa;
+import br.uece.threeopt.utils.Sequenciador;
 
 public class ThreeOptSequencial {
 	
@@ -19,7 +19,8 @@ public class ThreeOptSequencial {
 	public static long tempoTotal = 0;
 	public int naoMelhora = 0;
 	private Job[][] jobs = Matriz.getJobs();
-	int count;
+	private int parametro = 100000; //valor varia de solução a solução: refactory
+	private int count;
 		
 	/**
 	 * Método que efetivamente implementa o 3-OPT
@@ -41,21 +42,11 @@ public class ThreeOptSequencial {
 			sequenciasTestadas.add(seqInicial);
 			
 			long inicio = System.nanoTime();
-			executaThreeOPT(tarefas.clone());
+			executaShuffle(tarefas.clone());
 			long fim = System.nanoTime();
 			
-			//imprime alguns dados
-			Iterator<Sequencia> i = sequenciasTestadas.iterator();
-			
-			while(i.hasNext()){
-				System.out.println(i.next());
-			}
-			
 			System.out.println("*** "+sequenciasTestadas.first());
-			System.out.println("Tempo Total: "+(fim-inicio/1000000000));
-			System.out.println(naoMelhora);
-			System.out.println(seqInicial);
-			System.out.println("Count: "+count);
+			System.out.println("Tempo Total: "+(fim-inicio));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -67,7 +58,6 @@ public class ThreeOptSequencial {
 		
 		int index1 = 0, index2 = 0, index3 = 0;
 		int[] indexs = new int[3];
-		int parametro = 160; //valor varia de solução a solução: refactory
 		
 		//gerador de novas sequencias de tarefas até todas as condições serem satisfeitas
 		do {
@@ -82,7 +72,6 @@ public class ThreeOptSequencial {
 		} while (index1 == index2 || index1 == index3 || index2 == index3 || 
 				index2 == index1+1 || index3 == index2+1 ||  
 				verificaSeRepetido(indexs, tarefas.clone()) || naoMelhora < parametro);
-		System.out.println(naoMelhora);	
 		
 	}
 	
@@ -101,21 +90,21 @@ public class ThreeOptSequencial {
 	
 	public boolean verificaSeRepetido(int[] indexs, Tarefa[] tarefas){
 		
-		Tarefa aux1, aux2;
+		List<Tarefa[]> tarefasGeradas = Sequenciador.geraSequenciasPossiveis(indexs, tarefas);
 		
-		
-		
-		Sequencia sequencia = new Sequencia(tarefas, calculaTempoDaSequencia(tarefas));
-		
-		//só adiciona se sequencia ainda não existir no Set (garantido pelo Set e método equals de Sequencia)
-		if(sequenciasTestadas.add(sequencia)) {
-			System.out.println(naoMelhora);
-			naoMelhora++;
-			return false;
-		} else {
-			System.out.println("Melhor Tempo: "+sequenciasTestadas.first().getTempo()+" NaoMelhora: "+naoMelhora+" entrou no else: "+sequencia);
-			return true;
+		for (Tarefa[] tarefas2 : tarefasGeradas) {
+			Sequencia sequencia = new Sequencia(tarefas2, calculaTempoDaSequencia(tarefas2));
+			//só adiciona se sequencia ainda não existir no Set (garantido pelo Set e método equals de Sequencia)
+			if(sequenciasTestadas.add(sequencia)) {
+				naoMelhora++;
+			} 
+			
 		}
+		
+		if(naoMelhora >= parametro)
+			return false;
+		else
+			return true;
 		
 	}
 	
@@ -125,13 +114,11 @@ public class ThreeOptSequencial {
 		
 		//só adiciona se sequencia ainda não existir no Set (garantido pelo Set e método equals de Sequencia)
 		if(sequenciasTestadas.add(sequencia)) {
-			System.out.println(naoMelhora);
+			//System.out.println(naoMelhora);
 			naoMelhora++;
 			return false;
-		} else {
-			System.out.println("Melhor Tempo: "+sequenciasTestadas.first().getTempo()+" NaoMelhora: "+naoMelhora+" entrou no else: "+sequencia);
-			return true;
-		}
+		} 
+		return true;
 		
 	}
 	

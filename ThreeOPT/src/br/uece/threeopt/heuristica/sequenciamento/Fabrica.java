@@ -11,13 +11,12 @@ public class Fabrica {
 		@SuppressWarnings("unused")
 		Matriz jobs = new Matriz() {
 			public File getArquivo() {
-				return new File("/home/patrick/workspace/ThreeOPT/arquivos/instanciasSequenciamento/Car5.txt");
+				return new File("/home/patrick/workspace/ThreeOPT/arquivos/instanciasSequenciamento/Rec41.txt");
 			}
 		};
 		
 		ThreeOptSequencial tps = new ThreeOptSequencial();
 		tps.obtemSequencias();		
-		
 	}
 	
 }
