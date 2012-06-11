@@ -1,5 +1,7 @@
 package br.uece.threeopt.heuristica.opt;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -16,7 +18,8 @@ public class ThreeOptSequencial {
 	public TreeSet<Sequencia> sequenciasTestadas = new TreeSet<Sequencia>();
 	public static long tempoTotal = 0;
 	public int naoMelhora = 0;
-	private Job[][] jobs = Matriz.getJobs();	
+	private Job[][] jobs = Matriz.getJobs();
+	int count;
 		
 	/**
 	 * Método que efetivamente implementa o 3-OPT
@@ -52,6 +55,7 @@ public class ThreeOptSequencial {
 			System.out.println("Tempo Total: "+(fim-inicio/1000000000));
 			System.out.println(naoMelhora);
 			System.out.println(seqInicial);
+			System.out.println("Count: "+count);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -63,7 +67,7 @@ public class ThreeOptSequencial {
 		
 		int index1 = 0, index2 = 0, index3 = 0;
 		int[] indexs = new int[3];
-		int parametro = 150; //valor varia de solução a solução: refactory
+		int parametro = 160; //valor varia de solução a solução: refactory
 		
 		//gerador de novas sequencias de tarefas até todas as condições serem satisfeitas
 		do {
@@ -74,23 +78,48 @@ public class ThreeOptSequencial {
 			indexs[0] = index1;
 			indexs[1] = index2;
 			indexs[2] = index3;
-			/*if(naoMelhora > parametro)
-				break;*/
 			
-		} while (index1 == index2 || index1 == index3 || index2 == index3 || verificaSeRepetido(indexs, tarefas.clone()) || naoMelhora < parametro);
-		System.out.println(naoMelhora);
+		} while (index1 == index2 || index1 == index3 || index2 == index3 || 
+				index2 == index1+1 || index3 == index2+1 ||  
+				verificaSeRepetido(indexs, tarefas.clone()) || naoMelhora < parametro);
+		System.out.println(naoMelhora);	
+		
+	}
+	
+	public void executaShuffle(Tarefa[] tarefas){
+				
+		List<Tarefa> listas = Arrays.asList(tarefas);
+		while(count < 100000) {
+			Collections.shuffle(listas);
+			tarefas = (Tarefa[]) listas.toArray();
+			verificaSeRepetidoShuffle(tarefas);
+			listas = Arrays.asList(tarefas);
+			count++;
+		}
+		
 	}
 	
 	public boolean verificaSeRepetido(int[] indexs, Tarefa[] tarefas){
 		
 		Tarefa aux1, aux2;
 		
-		//altera sequencia das tarefas baseado nos indices gerados randomicamente
-		aux1 = tarefas[indexs[1]];
-		tarefas[indexs[1]] = tarefas[indexs[0]];
-		aux2 = tarefas[indexs[2]];
-		tarefas[indexs[2]] = aux1;
-		tarefas[indexs[0]] = aux2;
+		
+		
+		Sequencia sequencia = new Sequencia(tarefas, calculaTempoDaSequencia(tarefas));
+		
+		//só adiciona se sequencia ainda não existir no Set (garantido pelo Set e método equals de Sequencia)
+		if(sequenciasTestadas.add(sequencia)) {
+			System.out.println(naoMelhora);
+			naoMelhora++;
+			return false;
+		} else {
+			System.out.println("Melhor Tempo: "+sequenciasTestadas.first().getTempo()+" NaoMelhora: "+naoMelhora+" entrou no else: "+sequencia);
+			return true;
+		}
+		
+	}
+	
+	public boolean verificaSeRepetidoShuffle(Tarefa[] tarefas){	
 		
 		Sequencia sequencia = new Sequencia(tarefas, calculaTempoDaSequencia(tarefas));
 		

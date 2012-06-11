@@ -26,6 +26,8 @@ public class Sequencia implements Comparable<Sequencia>{
 		this.tempo = tempo;
 	}
 	
+	
+	
 	/*@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -54,7 +56,7 @@ public class Sequencia implements Comparable<Sequencia>{
 		return true;
 	}*/
 
-	@Override
+	/*@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -83,6 +85,28 @@ public class Sequencia implements Comparable<Sequencia>{
 			else
 				return true;
 		}
+		return true;
+	}*/
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(tarefas);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Sequencia other = (Sequencia) obj;
+		if (!Arrays.equals(tarefas, other.tarefas))
+			return false;
 		return true;
 	}
 
