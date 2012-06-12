@@ -2,7 +2,9 @@ package br.uece.threeopt.heuristica.caixeiroviajante;
 
 import java.util.Arrays;
 
-public class Caminho implements Cloneable{
+import br.uece.threeopt.heuristica.sequenciamento.Sequencia;
+
+public class Caminho implements Cloneable, Comparable<Caminho>{
 	
 	private Ponto[] ponto = null;
 	private Double distancia = 0d;
@@ -31,8 +33,11 @@ public class Caminho implements Cloneable{
 
 	@Override
 	public String toString() {
-		return "Caminho [ponto=" + Arrays.toString(ponto) + ", distancia="
-				+ distancia + "]";
+		return Arrays.toString(ponto) + " -> " + distancia;
 	}
 	
+	@Override
+	public int compareTo(Caminho o) {
+		return distancia.compareTo(o.getDistancia());
+	}
 }

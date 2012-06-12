@@ -99,7 +99,6 @@ public class Ponto{
 	}
 	@Override
 	public String toString() {
-		return "Ponto [id=" + id + ", coordX=" + coordX + ", coordY=" + coordY
-				+ "]";
+		return id.toString();
 	}	
 }
