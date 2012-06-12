@@ -69,8 +69,11 @@ public class ThreeOpt {
 				}
 			}
 			else {
-				for (int i = 0; i < Math.pow(cicloOriginal.length, 2)/2 || naoMelhora < Math.pow(cicloOriginal.length, 2)/2 * 0.05;   i++) {	
-					melhorCaminho = obtemInteracoes(matriz, melhorCaminho, obtemVerticesRandomicos(matriz.length-1));
+				
+				double condicaoParada = Math.pow(cicloOriginal.length, 2)/2;
+				for (int i = 0; i < condicaoParada || naoMelhora < condicaoParada * 0.05;  i++) {	
+					melhorCaminho = obtemInteracoes(matriz, melhorCaminho, 
+							obtemVerticesRandomicos(matriz.length-1));
 					melhorCaminho = adicionaCaminho(melhorCaminho);
 				}
 			}

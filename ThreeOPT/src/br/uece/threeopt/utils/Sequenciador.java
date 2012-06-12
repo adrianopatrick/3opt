@@ -15,12 +15,11 @@ public class Sequenciador {
 		int j = ((i + 1) > (tarefas.length - 1)? 0 : i+1);
 		int k = indexs[1];
 		int l = ((k + 1) > (tarefas.length - 1)? 0 : k+1);
-		int m = indexs[2];
-		@SuppressWarnings("unused")
-		int n = ((m + 1) > (tarefas.length - 1)? 0 : m+1);
+		int m = indexs[2];		
+		//int n = ((m + 1) > (tarefas.length - 1)? 0 : m+1);
 		
 		int[] sequenciaAtual = {j, k, l, m};
-		int[][] posicoes = {{m,k,j,l}, {j, m, k, l}, {k,m,l,j},{k,j,m,l}, {k,j,l,m},	{l,j,k,m}, {m,l,j,k}, {l,k,m,j},
+		int[][] posicoes = {{m,k,j,l}, {j, m, k, l}, {k,m,l,j},{k,j,m,l}, {k,j,l,m}, {l,j,k,m}, {m,l,j,k}, {l,k,m,j},
 				{k,l,j,m}, {k,m,j,l}, {l,k,j,m}, {m,l,k,j},	{j,k,m,l}, {l,j,m,k}, {j,l,m,k}, {m,j,l,k}, {l,m,k,j},
 				{j,m,l,k}, {m,j,k,l}, {m,k,l,j}, {l,m,j,k},	{j,l,k,m}, {k,l,m,j}, {j,k,l,m}};
 		
@@ -37,7 +36,6 @@ public class Sequenciador {
 		}	
 				
 		return listTarefas;
-		
 	}
 	
 }
