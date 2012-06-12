@@ -1,13 +1,8 @@
 package br.uece.threeopt.heuristica.opt;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Random;
-
-import sun.util.calendar.BaseCalendar;
-import sun.util.calendar.BaseCalendar.Date;
+import java.util.TreeSet;
 
 import br.uece.threeopt.heuristica.caixeiroviajante.Celula;
 import br.uece.threeopt.heuristica.caixeiroviajante.Ponto;
@@ -15,7 +10,7 @@ import br.uece.threeopt.heuristica.caixeiroviajante.Caminho;
 
 public class ThreeOpt {
 	
-	public List<Caminho> caminhos = new ArrayList<Caminho>(); 
+	public TreeSet<Caminho> caminhos = new TreeSet<Caminho>(); 
 	public static long tempoTotal = 0;
 	public int naoMelhora = 0;
 		
@@ -35,7 +30,7 @@ public class ThreeOpt {
 		
 		//Fecha o ciclo
 		ciclo[matriz.length] = ciclo[0];
-	
+		//System.out.println(melhorCaminho.toString());
 		return ciclo;
 	}
 	
@@ -44,64 +39,68 @@ public class ThreeOpt {
 	 * @version 1.0
 	 * Este metodo obtem os melhores caminhos da solucao
 	 */
-	public List<Caminho> obtemCaminhos(Celula[][] matriz)
+	public TreeSet<Caminho> obtemCaminhos(Celula[][] matriz)
 	{
-		try {
-			Ponto[] cicloOriginal = obtemCicloHamiltoniano(matriz);
-			Caminho melhorCaminho = new Caminho();
-			melhorCaminho.setPonto(cicloOriginal);
-			melhorCaminho.setDistancia(calculaDistancia(matriz, cicloOriginal));
-			caminhos.add(melhorCaminho);
-			
-			long tempoInicial = System.nanoTime();
-			if (matriz.length <= 100) {
-				int v[] = new int[3];
-				for (int qtdeRepeticoes = 0; qtdeRepeticoes < matriz.length; qtdeRepeticoes++) {
+		Ponto[] cicloOriginal = obtemCicloHamiltoniano(matriz);
+		Caminho melhorCaminho = new Caminho();
+		melhorCaminho.setPonto(cicloOriginal);
+		melhorCaminho.setDistancia(calculaDistancia(matriz, cicloOriginal));
+		caminhos.add(melhorCaminho);
+		
+		long tempoInicial = System.nanoTime();
+		if (matriz.length <= 250) {
+			int v[] = new int[3];
+			for (int teste = 0; teste < matriz.length; teste++) {
+				
+				Ponto[] pt = new Ponto[matriz.length+1];
+				
+				int controle = teste;
+				int aa = 0;
+				for (; aa < matriz.length - teste; aa++) {
+					pt[aa] = cicloOriginal[controle];
+					controle++;
+				}
+				
+				int controle2 = 0;
+				for (; aa < matriz.length; aa++) {
+					pt[aa] = cicloOriginal[controle2];
+					controle2++;
+				}
+				pt[matriz.length] = pt[0];
+				
+				melhorCaminho.setPonto(pt);
+				melhorCaminho.setDistancia(calculaDistancia(matriz, pt));
+				
+				//System.out.println(melhorCaminho.toString());
+				
+				for (int qtdeRepeticoes = 0; qtdeRepeticoes < 2; qtdeRepeticoes++) {
 					for (int i = 0; i < matriz.length; i++) { 
 						for (int k = i + 2; k < matriz.length; k++) { 
 							for (int m = k + 2; m < matriz.length; m++) { 
 								v[0] = i; v[1] = k; v[2] = m; 
 								melhorCaminho = obtemInteracoes(matriz, melhorCaminho, v);
-								melhorCaminho = adicionaCaminho(melhorCaminho);
+								if (melhorCaminho.getDistancia() < caminhos.first().getDistancia()) {
+									caminhos.add(melhorCaminho);
+									naoMelhora = 0;
+								} else naoMelhora++;
 							}
 						}
 					}
 				}
 			}
-			else {
-				
-				double condicaoParada = Math.pow(cicloOriginal.length, 2)/2;
-				for (int i = 0; i < condicaoParada || naoMelhora < condicaoParada * 0.05;  i++) {	
-					melhorCaminho = obtemInteracoes(matriz, melhorCaminho, 
-							obtemVerticesRandomicos(matriz.length-1));
-					melhorCaminho = adicionaCaminho(melhorCaminho);
-				}
-			}
-			tempoTotal = System.nanoTime() - tempoInicial;
-			return caminhos;
 		}
-		catch (Exception e) { }
-		return null;
-	}
-	
-	/**
-	 * @author raquel silveira e paulo alberto
-	 * @version 1.0
-	 * Este metodo adiciona os melhores caminhos a uma lista
-	 */
-	private Caminho adicionaCaminho(Caminho caminho)
-	{
-		try {
-			Caminho ultimoCaminho = caminhos.get(caminhos.size()-1);
-			
-			if (caminho.getDistancia() < ultimoCaminho.getDistancia()) {
-				caminhos.add(caminho);
-				return caminho;
+		else {
+			double qtdeIteracoes = Math.pow(cicloOriginal.length,2)/2; 
+			for (int i = 0; i < qtdeIteracoes || naoMelhora < qtdeIteracoes * 0.05;   i++) {	
+				melhorCaminho = obtemInteracoes(matriz, melhorCaminho, obtemVerticesRandomicos(matriz.length));
+				if (melhorCaminho.getDistancia() < caminhos.first().getDistancia()) {
+					caminhos.add(melhorCaminho);
+					naoMelhora = 0;
+				} else naoMelhora++;
 			}
-			return ultimoCaminho;
 		}
-		catch (Exception e) { }
-		return null;
+		tempoTotal = System.nanoTime() - tempoInicial;
+		return caminhos;
 	}
 	
 	/**
@@ -113,20 +112,17 @@ public class ThreeOpt {
 	 * @param vertices escolhidos para serem removidos
 	 */
 	public Caminho obtemInteracoes(Celula[][] matriz, Caminho caminho, int[] v){
-		
-		/*System.out.println(v[0] + " [i: " + caminho.getPonto()[v[0]].getId() + " - j: " + caminho.getPonto()[v[0]+1].getId() + "]");
-		System.out.println(v[1] + " [k: " + caminho.getPonto()[v[1]].getId() + " - l: " + caminho.getPonto()[v[1]+1].getId() + "]");
-		System.out.println(v[2] + " [m: " + caminho.getPonto()[v[2]].getId() + " - n: " + caminho.getPonto()[v[2]+1].getId() + "]");*/
-						
+
+		//System.out.println(v[0] + " [i: " + caminho.getPonto()[v[0]].getId() + " - j: " + caminho.getPonto()[v[0]+1].getId() + "]");
+		//System.out.println(v[1] + " [k: " + caminho.getPonto()[v[1]].getId() + " - l: " + caminho.getPonto()[v[1]+1].getId() + "]");
+		//System.out.println(v[2] + " [m: " + caminho.getPonto()[v[2]].getId() + " - n: " + caminho.getPonto()[v[2]+1].getId() + "]");
+				
 		Caminho melhorCiclo = null;
 		try { melhorCiclo = caminho.clone(); }
 		catch (Exception e) { }
 		
-		/*System.out.print("(0)");
-		for (int j = 0; j < caminho.getPonto().length; j++) {
-			System.out.print(" - " + caminho.getPonto()[j].getId());
-		}
-		System.out.println(" -> " + caminho.getDistancia());*/
+		//System.out.println(caminho.toString());
+		
 		double c0 = caminho.getDistancia() 
 					- (matriz[caminho.getPonto()[v[0]].getId()-1][caminho.getPonto()[v[0]+1].getId()-1].getDistancia()
 					+ matriz[caminho.getPonto()[v[1]].getId()-1][caminho.getPonto()[v[1]+1].getId()-1].getDistancia()
@@ -147,22 +143,15 @@ public class ThreeOpt {
 			}
 			
 			try {
-			if (ciclo.getDistancia() < melhorCiclo.getDistancia()) {
-				melhorCiclo = ciclo.clone();
-				naoMelhora = 0;
-			}
-			else naoMelhora++;
+				if (ciclo.getDistancia() < melhorCiclo.getDistancia())
+					melhorCiclo = ciclo.clone();
 			} catch(Exception ex) {}
 			
 			/*System.out.print("(" + i + ")");
-			for (int j = 0; j < ciclo.getPonto().length; j++) {
-				System.out.print(" - " + ciclo.getPonto()[j].getId());
-			}
-			System.out.println(" -> " + ciclo.getDistancia());*/
+			System.out.println(caminho.toString());*/
 		}
-		
-		//System.out.println("Melhor distï¿½ncia: " + melhorCiclo.getDistancia());
-		return melhorCiclo;	
+		//System.out.println("Melhor distância: " + melhorCiclo.getDistancia());
+		return melhorCiclo;
 	}
 			
 	/**
@@ -175,16 +164,13 @@ public class ThreeOpt {
 		
 		Random randomico = new Random();
 		int v[] = new int[3];
-		v[0] = randomico.nextInt(n);
-		
-		do { v[1] = randomico.nextInt(n); }
-		while (v[1] == v[0] || v[0] == v[1] + 1 || v[0] == v[1] - 1 || (v[0] == 0 && v[1] == n));
-		
-		do { v[2] = randomico.nextInt(n); }
-		while (v[2] == v[1] || v[2] == v[0] || v[2] == v[1] + 1 || v[2] == v[1] - 1 || v[2] == v[0] + 1 || v[2] == v[0] - 1 || (v[0] == 0 && v[2] == n) || (v[1] == 0 && v[2] == n));
-		
+		do { 
+			v[0] = randomico.nextInt(n);
+			v[1] = randomico.nextInt(n);
+			v[2] = randomico.nextInt(n);
+		}
+		while (v[0] > n - 4 || v[1] <= v[0] + 1 || v[2] <= v[1] + 1);
 		Arrays.sort(v);
-		
 		return v;
 	}
 	
