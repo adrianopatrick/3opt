@@ -53,7 +53,7 @@ public class frmJSSP extends JFrame {
 		txtArquivo.setEditable(false);
 		txtArquivo.setSize(20, 100);
 		Button btnAbreArquivo = new Button("Selecionar arquivo");
-		Button btnGeraSolucao = new Button("Gerar soluï¿½ï¿½o");
+		Button btnGeraSolucao = new Button("Gerar solução");
 		panel.add(label1);
 		panel.add(txtArquivo);
 		panel.add(btnAbreArquivo);
@@ -76,7 +76,7 @@ public class frmJSSP extends JFrame {
 		panel2.add(lblN);
 		
 		JLabel label3 = new JLabel();
-		label3.setText("Soluï¿½ï¿½o Menor Caminho: ");
+		label3.setText("Solução Menor Caminho: ");
 		label3.setBounds(10, 30, 100, 20);
 		panel2.add(label3);
 		

@@ -8,7 +8,9 @@ import java.awt.TextField;
 import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
@@ -250,16 +252,12 @@ public class frmCaixeiroViajante extends JFrame {
 			origem = ciclo[i];
 			destino = ciclo[i+1];
 			
-			System.out.print(ciclo[i].getId() + " - ");
-			
 			if (origem.getCoordX() != null && origem.getCoordY() != null && destino.getCoordX() != null && destino.getCoordY() != null) {
 				double zoom = getZoom();
 				g.setColor(Color.BLUE); 
 				g.drawLine((int)(origem.getCoordX()*zoom + panel2.getWidth()/2), (int)(panel2.getHeight()/2 - origem.getCoordY()*zoom), (int)(destino.getCoordX()*zoom + panel2.getWidth()/2), (int)(panel2.getHeight()/2 - destino.getCoordY()*zoom));
 			}
 		}
-		
-		System.out.println();
 	}
 	
 	/**
@@ -314,16 +312,21 @@ public class frmCaixeiroViajante extends JFrame {
 			lblN.setText(matriz.length+"");
 			lblOtima.setText(distancia+"");
 							
-			List<Caminho> caminhos = new ThreeOpt().obtemCaminhos(matriz);			
-			for (Caminho caminho : caminhos) {
-				 
-				desenhaTrajetoria(caminho.getPonto());
-				lblOtima.setText(caminho.getDistancia().toString());
-				System.out.println(caminho.getDistancia());
+			TreeSet<Caminho> caminhos = new ThreeOpt().obtemCaminhos(matriz);
+			
+			/*for (Iterator iterator = caminhos.descendingIterator(); iterator.hasNext();) {
+				desenhaTrajetoria(((Caminho)iterator.next()).getPonto());
+				lblOtima.setText(((Caminho)iterator.next()).getDistancia().toString());
+				
+				System.out.println(((Caminho)iterator.next()).toString());
 				Thread.sleep(300);
-			}
+			}*/
+			
 			System.out.println("Tempo total: " + ThreeOpt.tempoTotal + " ns");
+			System.out.println("Solução inicial: " + caminhos.last().toString());
+			System.out.println("Melhor caminho: " + caminhos.first().toString());
+			
 		}
-		catch(InterruptedException e) {}	
+		catch(Exception e) {}	
 	}
 }
