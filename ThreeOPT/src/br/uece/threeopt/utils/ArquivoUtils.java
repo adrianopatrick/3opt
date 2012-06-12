@@ -23,12 +23,13 @@ import br.uece.threeopt.heuristica.sequenciamento.Tarefa;
  * De acordo com o tipo, sera gerada a matriz
  * */
 public class ArquivoUtils {
-	
+		
 	private static Celula[][] matriz;
 		
 	private enum TipoArquivo
 	{
 		matriz,
+		matrizTipo2,
 		ponto
 	}
 	
@@ -52,12 +53,40 @@ public class ArquivoUtils {
 			matriz = new Celula[n][n];
 						
 			int indiceLinha = 0;
+			int indiceColuna = 0;
+			
 			String linha;
 			switch (arq) {
 				case matriz: {
 					while(arquivoLeitura.ready() && !(linha = arquivoLeitura.readLine()).trim().equals("")){
 						lerArquivoMatriz(matriz, linha, indiceLinha); 
 						indiceLinha++;
+					}
+					matriz[n-1][n-1] = obtemCelulaDiagonal(n-1);
+					MatrizAdjacencias.geraMatrizAdjacenciasApartirDeMatrizIncompleta(matriz);
+					break;
+				}
+				case matrizTipo2: {
+					indiceLinha = -1;
+					while(arquivoLeitura.ready() && !(linha = arquivoLeitura.readLine()).trim().equals("")){
+						
+						StringTokenizer token = new StringTokenizer(linha, " ");
+						while(token.hasMoreTokens()) {
+				    		double distancia = Double.parseDouble(token.nextToken());
+				    		if (distancia == 0) {
+				    			indiceLinha++;
+				    			indiceColuna = indiceLinha + 1;
+				    			matriz[indiceLinha][indiceLinha] = obtemCelulaDiagonal(indiceLinha);
+				    			if(indiceLinha < n-1)
+				    				distancia = Double.parseDouble(token.nextToken());
+				    			else
+				    				break;
+				    		}
+				    		Ponto origem = new Ponto(); origem.setId(indiceLinha+1);
+				    		Ponto destino = new Ponto(); destino.setId(indiceColuna+1);
+				    		matriz[indiceLinha][indiceColuna] = new Celula(origem, destino, distancia);
+					       	indiceColuna++;
+				    	}
 					}
 					matriz[n-1][n-1] = obtemCelulaDiagonal(n-1);
 					MatrizAdjacencias.geraMatrizAdjacenciasApartirDeMatrizIncompleta(matriz);
@@ -74,7 +103,7 @@ public class ArquivoUtils {
 				}
 			}
 			
-	        arquivoLeitura.close();
+	        arquivoLeitura.close();       
 		}
 		catch (FileNotFoundException  e) {
 			// TODO: handle exception
@@ -139,8 +168,12 @@ public class ArquivoUtils {
 	private TipoArquivo identificaTipoArquivo(String linha) {
 		
 		TipoArquivo arquivo = null;
-		if (linha.contains("matriz"))
-		{ arquivo = TipoArquivo.matriz;  }
+		if (linha.contains("matriz")) { 
+			if (linha.contains("0 delimita"))
+				arquivo = TipoArquivo.matrizTipo2;
+			else
+				arquivo = TipoArquivo.matriz;  
+		}
 		else
 		{ arquivo = TipoArquivo.ponto; }
 		return arquivo;
