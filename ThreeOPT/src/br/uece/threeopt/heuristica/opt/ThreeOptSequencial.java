@@ -19,7 +19,7 @@ public class ThreeOptSequencial {
 	public static long tempoTotal = 0;
 	public int naoMelhora = 0;
 	private Job[][] jobs = Matriz.getJobs();
-	private int parametro = 100000; //valor varia de solução a solução: refactory
+	public static int parametro; //valor varia de solução a solução: refactory
 	private int count;
 		
 	/**
@@ -42,7 +42,10 @@ public class ThreeOptSequencial {
 			sequenciasTestadas.add(seqInicial);
 			
 			long inicio = System.nanoTime();
-			executaThreeOPT(tarefas.clone());
+			if(parametro == 100000)
+				executaShuffle(tarefas.clone());
+			else
+				executaThreeOPT(tarefas.clone());
 			long fim = System.nanoTime();
 			
 			System.out.println("*** "+sequenciasTestadas.first());
@@ -59,7 +62,7 @@ public class ThreeOptSequencial {
 		int index1 = 0, index2 = 0, index3 = 0;
 		int[] indexs = new int[3];
 		
-		//seleciona randomicamente 3 indices para substituição
+		//gerador de novas sequencias de tarefas até todas as condições serem satisfeitas
 		do {
 			index1 = new Random().nextInt(tarefas.length);
 			index2 = new Random().nextInt(tarefas.length);
@@ -71,7 +74,8 @@ public class ThreeOptSequencial {
 			
 		} while (index1 == index2 || index1 == index3 || index2 == index3 || 
 				index2 == index1+1 || index3 == index2+1 ||  
-				geraNovasSequencias(indexs, tarefas.clone()) || naoMelhora < parametro);
+				verificaSeRepetido(indexs, tarefas.clone()) || naoMelhora < parametro);
+		
 	}
 	
 	public void executaShuffle(Tarefa[] tarefas){
@@ -87,17 +91,17 @@ public class ThreeOptSequencial {
 		
 	}
 	
-	public boolean geraNovasSequencias(int[] indexs, Tarefa[] tarefas){
+	public boolean verificaSeRepetido(int[] indexs, Tarefa[] tarefas){
 		
 		List<Tarefa[]> tarefasGeradas = Sequenciador.geraSequenciasPossiveis(indexs, tarefas);
 		
 		for (Tarefa[] tarefas2 : tarefasGeradas) {
 			Sequencia sequencia = new Sequencia(tarefas2, calculaTempoDaSequencia(tarefas2));
-			//só adiciona se sequencia ainda não existir no Set 
-			//(garantido pelo Set e método equals de Sequencia)
+			//só adiciona se sequencia ainda não existir no Set (garantido pelo Set e método equals de Sequencia)
 			if(sequenciasTestadas.add(sequencia)) {
 				naoMelhora++;
 			} 
+			
 		}
 		
 		if(naoMelhora >= parametro)
@@ -120,10 +124,7 @@ public class ThreeOptSequencial {
 		return true;
 		
 	}
-	Integer[] tempo;
-//	for (int i = 0; i < tempo.length; i++) {
-//		tempo[i] = 0;
-//	}
+	
 	/**
 	 * Método que calcula do Tempo da sequencia informada
 	 * @author patrick
@@ -131,7 +132,10 @@ public class ThreeOptSequencial {
 	public Integer calculaTempoDaSequencia(Tarefa[] sequencia){
 		
 		/* define um array de tempo do tamanho da quantidade de máquinas do problema */
-		tempo = new Integer[jobs.length];
+		Integer[] tempo = new Integer[jobs.length];
+		for (int i = 0; i < tempo.length; i++) {
+			tempo[i] = 0;
+		}
 		
 		// j define a tarefa que está sendo calculada
 		int j = 0;	
@@ -140,19 +144,15 @@ public class ThreeOptSequencial {
 		for (int k = 0; k < sequencia.length; k++) {
 			j = sequencia[k].getId();
 			
-			//o tempo da primeira máquina sempre será a soma do 
-			//tempo anterior com o tempo da tarefa j na máquina 0
+			//o tempo da primeira máquina sempre será a soma do tempo anterior com o tempo da tarefa j na máquina 0
 			tempo[0] += jobs[0][j].getTempo();
 			
-			// navega por todas as máquinas calculando a 
-			//distribuição das tarefas em cada uma das máquinas
+			// navega por todas as máquinas calculando a distribuição das tarefas em cada uma das máquinas
 			for (int i = 1; i < tempo.length; i++) {
-				//se o tempo da máquina atual já é maior que o tempo da 
-				//máquina anterior, apenas pego o tempo da tarefa e adiciono na máquina
+				//se o tempo da máquina atual já é maior que o tempo da máquina anterior, apenas pego o tempo da tarefa e adiciono na máquina
 				if(tempo[i] > tempo[i-1])
 					tempo[i] += jobs[i][j].getTempo();
-				//senão o tempo da máquina atual será o tempo da máquina anterior 
-				//mais o tempo da tarefa na máquina atual
+				//senão o tempo da máquina atual será o tempo da máquina anterior mais o tempo da tarefa na máquina atual
 				else
 					tempo[i] = tempo[i - 1] + jobs[i][j].getTempo();
 			}
