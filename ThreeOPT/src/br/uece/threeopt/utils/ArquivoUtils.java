@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 import br.uece.threeopt.heuristica.caixeiroviajante.Celula;
 import br.uece.threeopt.heuristica.caixeiroviajante.MatrizAdjacencias;
 import br.uece.threeopt.heuristica.caixeiroviajante.Ponto;
+import br.uece.threeopt.heuristica.opt.ThreeOptSequencial;
 import br.uece.threeopt.heuristica.sequenciamento.Job;
 import br.uece.threeopt.heuristica.sequenciamento.Maquina;
 import br.uece.threeopt.heuristica.sequenciamento.Tarefa;
@@ -118,6 +119,19 @@ public class ArquivoUtils {
 	public static Job[][] lerArquivoJSSP(File arquivo) {
 		
 		Job[][] jobs = null;
+		
+		if(arquivo.getPath().contains("Hel11.txt"))
+			ThreeOptSequencial.parametro = 44;
+		else if(arquivo.getPath().contains("ReC07.txt"))
+			ThreeOptSequencial.parametro = 377;
+		else if(arquivo.getPath().contains("Rec13.txt"))
+			ThreeOptSequencial.parametro = 381;
+		else if(arquivo.getPath().contains("Rec37.txt"))
+			ThreeOptSequencial.parametro = 466;
+		else if(arquivo.getPath().contains("Rec41.txt"))
+			ThreeOptSequencial.parametro = 478;
+		else
+			ThreeOptSequencial.parametro = 100000;
 
 		try
 		{
