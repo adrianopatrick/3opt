@@ -1,0 +1,1 @@
+Este trabalho tem por finalidade criar um artigo para publicação de uma nova aplicabilidade da heurítica 3-opt
